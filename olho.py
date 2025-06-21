@@ -102,11 +102,49 @@ def consultar_ip(ip):
     except Exception as e:
         print(VERMELHO + "Erro ao consultar IP." + RESET)
         print(VERMELHO + str(e) + RESET)
+def enviar_likes_freefire():
+    uid = input("\nDigite o ID do jogador Free Fire: ")
+    quantidade = input("Quantidade de likes (padrão: 100): ") or "100"
+    
+    url = f"https://likes.ffgarena.cloud/api/likesvip_ff?uid={uid}&quantity={quantidade}"
+    try:
+        response = requests.get(url, timeout=10)
+        if response.status_code == 200:
+            print(BRANCO + "Likes enviados com sucesso!" + RESET)
+            print("Resposta:", response.text)
+        else:
+            print(VERMELHO + "Erro ao enviar likes." + RESET)
+            print(response.text)
+    except Exception as e:
+        print(VERMELHO + "Erro ao conectar com a API de likes." + RESET)
+        print(str(e))
+
+def consultar_id_freefire():
+    uid = input("\nDigite o ID do jogador Free Fire para consulta: ")
+    # Exemplo fictício — substitua pela API correta se houver uma real
+    url = f"https://likes.ffgarena.cloud/api/consulta_ff?uid={uid}"  # Exemplo de endpoint fictício
+
+    try:
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+        try:
+            dados = response.json()
+            print(BRANCO + "Dados do jogador:")
+            for chave, valor in dados.items():
+                print(f"{chave.capitalize()}: {valor}")
+        except ValueError:
+            print(BRANCO + "Resposta da API (texto):")
+            print(response.text)
+    except Exception as e:
+        print(VERMELHO + "Erro ao consultar ID do jogador." + RESET)
+        print(str(e))
 
 def menu():
     print(BRANCO + "[1] Consultar CPF")
     print("[2] Consultar CNPJ")
     print("[3] Consultar IP")
+    print("[4] Enviar Likes Free Fire")
+    print("[5] Consultar ID Free Fire")
     print("[0] Sair\n" + RESET)
 
     escolha = input(VERMELHO + "Escolha uma opção: " + RESET)
@@ -120,6 +158,10 @@ def menu():
     elif escolha == "3":
         ip = input("\nDigite o IP: ")
         consultar_ip(ip)
+    elif escolha == "4":
+        enviar_likes_freefire()
+    elif escolha == "5":
+        consultar_id_freefire()
     elif escolha == "0":
         print("\nSaindo...")
         time.sleep(1)
