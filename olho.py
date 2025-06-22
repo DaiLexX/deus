@@ -121,20 +121,43 @@ def enviar_likes_freefire():
 
 def consultar_id_freefire():
     uid = input("\nDigite o ID do jogador Free Fire para consulta: ")
-    # Exemplo fictício — substitua pela API correta se houver uma real
-    url = f"https://likes.ffgarena.cloud/api/consulta_ff?uid={uid}"  # Exemplo de endpoint fictício
+    url = f"https://system.ffgarena.cloud/api/info_avatar?uid={uid}&region=br"
 
     try:
         response = requests.get(url, timeout=10)
         response.raise_for_status()
-        try:
-            dados = response.json()
-            print(BRANCO + "Dados do jogador:")
-            for chave, valor in dados.items():
-                print(f"{chave.capitalize()}: {valor}")
-        except ValueError:
-            print(BRANCO + "Resposta da API (texto):")
-            print(response.text)
+        data = response.json()
+
+        basic = data.get("basicInfo", {})
+        clan = data.get("clanBasicInfo", {})
+        pet = data.get("petInfo", {})
+        social = data.get("socialInfo", {})
+        avatar_url = data.get("avatars", "N/A")
+
+        print(BRANCO + "\n=== Informações do Jogador ===")
+        print(f"Nickname      : {basic.get('nickname', 'N/A')}")
+        print(f"Nível         : {basic.get('level', 'N/A')}")
+        print(f"Likes         : {basic.get('liked', 'N/A')}")
+        print(f"Rank          : {basic.get('rank', 'N/A')}")
+        print(f"Pontos Rank   : {basic.get('rankingPoints', 'N/A')}")
+        print(f"Região        : {basic.get('region', 'N/A')}")
+        print(f"Tem passe elite? {'Sim' if basic.get('hasElitePass') else 'Não'}")
+
+        print(BRANCO + "\n=== Informações do Clã ===")
+        print(f"Nome do Clã   : {clan.get('clanName', 'N/A')}")
+        print(f"Nível do Clã  : {clan.get('clanLevel', 'N/A')}")
+        print(f"Membros       : {clan.get('memberNum', 'N/A')} de {clan.get('capacity', 'N/A')}")
+
+        print(BRANCO + "\n=== Informações do Pet ===")
+        print(f"Nome do Pet   : {pet.get('petName', 'N/A')}")
+        print(f"Nível do Pet  : {pet.get('level', 'N/A')}")
+
+        print(BRANCO + "\n=== Social ===")
+        print(f"Frase         : {social.get('signature', 'N/A')}")
+
+        print(BRANCO + "\n=== Avatar ===")
+        print(f"URL da Imagem : {avatar_url}")
+
     except Exception as e:
         print(VERMELHO + "Erro ao consultar ID do jogador." + RESET)
         print(str(e))
