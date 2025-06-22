@@ -129,9 +129,9 @@ def consultar_id_freefire():
         data = response.json()
 
         basic = data.get("basicInfo", {})
-        clan = data.get("clanBasicInfo", {})
-        pet = data.get("petInfo", {})
-        social = data.get("socialInfo", {})
+        clan = data.get("clanBasicInfo") if isinstance(data.get("clanBasicInfo"), dict) else {}
+        pet = data.get("petInfo") if isinstance(data.get("petInfo"), dict) else {}
+        social = data.get("socialInfo", {}) if isinstance(data.get("socialInfo"), dict) else {}
         avatar_url = data.get("avatars", "N/A")
 
         print(BRANCO + "\n=== Informações do Jogador ===")
@@ -143,14 +143,20 @@ def consultar_id_freefire():
         print(f"Região        : {basic.get('region', 'N/A')}")
         print(f"Tem passe elite? {'Sim' if basic.get('hasElitePass') else 'Não'}")
 
-        print(BRANCO + "\n=== Informações do Clã ===")
-        print(f"Nome do Clã   : {clan.get('clanName', 'N/A')}")
-        print(f"Nível do Clã  : {clan.get('clanLevel', 'N/A')}")
-        print(f"Membros       : {clan.get('memberNum', 'N/A')} de {clan.get('capacity', 'N/A')}")
+        if clan:
+            print(BRANCO + "\n=== Informações do Clã ===")
+            print(f"Nome do Clã   : {clan.get('clanName', 'N/A')}")
+            print(f"Nível do Clã  : {clan.get('clanLevel', 'N/A')}")
+            print(f"Membros       : {clan.get('memberNum', 'N/A')} de {clan.get('capacity', 'N/A')}")
+        else:
+            print(VERMELHO + "\nJogador não está em um clã." + RESET)
 
-        print(BRANCO + "\n=== Informações do Pet ===")
-        print(f"Nome do Pet   : {pet.get('petName', 'N/A')}")
-        print(f"Nível do Pet  : {pet.get('level', 'N/A')}")
+        if pet:
+            print(BRANCO + "\n=== Informações do Pet ===")
+            print(f"Nome do Pet   : {pet.get('petName', 'N/A')}")
+            print(f"Nível do Pet  : {pet.get('level', 'N/A')}")
+        else:
+            print(VERMELHO + "\nNenhum pet encontrado." + RESET)
 
         print(BRANCO + "\n=== Social ===")
         print(f"Frase         : {social.get('signature', 'N/A')}")
